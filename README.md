@@ -49,3 +49,17 @@ dotnet publish DaemonCopy -c Release -r osx-arm64 --self-contained true
 
 Logs are written to `error.log`. On startup, the previous log file is moved to
 the `log` directory and log files older than 7 days are removed.
+
+## CI and releases
+
+GitHub Actions builds the project on every push to `master` and on pull requests.
+
+To create release binaries, push a version tag:
+
+```bash
+git tag v1.2.0
+git push origin v1.2.0
+```
+
+The release workflow publishes self-contained single-file builds for Linux,
+Windows, and macOS.

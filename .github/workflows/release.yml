@@ -1,0 +1,79 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Publish ${{ matrix.runtime }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runtime: linux-x64
+            artifact-name: DaemonCopy-linux-x64
+            executable-name: DaemonCopy
+          - runtime: linux-arm64
+            artifact-name: DaemonCopy-linux-arm64
+            executable-name: DaemonCopy
+          - runtime: win-x64
+            artifact-name: DaemonCopy-win-x64
+            executable-name: DaemonCopy.exe
+          - runtime: osx-arm64
+            artifact-name: DaemonCopy-osx-arm64
+            executable-name: DaemonCopy
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Publish
+        run: >
+          dotnet publish DaemonCopy/DaemonCopy.csproj
+          --configuration Release
+          --runtime ${{ matrix.runtime }}
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:DebugType=None
+          -p:DebugSymbols=false
+          --output publish/${{ matrix.artifact-name }}
+
+      - name: Package
+        run: |
+          cd publish/${{ matrix.artifact-name }}
+          if [ "${{ matrix.runtime }}" = "win-x64" ]; then
+            zip -r ../../${{ matrix.artifact-name }}.zip .
+          else
+            chmod +x "${{ matrix.executable-name }}"
+            tar -czf ../../${{ matrix.artifact-name }}.tar.gz .
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact-name }}
+          path: |
+            ${{ matrix.artifact-name }}.zip
+            ${{ matrix.artifact-name }}.tar.gz
+          if-no-files-found: ignore
+
+      - name: Upload release asset
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ matrix.artifact-name }}.zip
+            ${{ matrix.artifact-name }}.tar.gz
