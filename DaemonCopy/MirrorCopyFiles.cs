@@ -1,12 +1,11 @@
 ﻿using DaemonCopy.Services;
-using System.IO;
 
 namespace DaemonCopy
 {
     class MirrorCopyFiles : ICopyFiles
     {
 
-        private static Log _logger;
+        private readonly Log _logger;
 
         public MirrorCopyFiles()
         {

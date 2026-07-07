@@ -1,26 +1,16 @@
 ﻿using DaemonCopy.Services;
-using System;
-using System.IO;
 
 namespace DaemonCopy
 {
     internal class Program
     {
-        private static string _argS;
-        private static string _argD;
-
-        private static void Main(string[] args)
+        private static int Main(string[] args)
         {
-            if (args.Length == 2)
+            if (args.Length != 2)
             {
-                 _argS = args[0];
-                 _argD = args[1];
-            }
-            else
-            {
-                Console.WriteLine("Не верно указаны параметры запуска");
-                Console.WriteLine("Использование: DaemonCopy.exe \"parametr 1\" \"parametr 2\"");
-                Console.ReadLine();
+                Console.WriteLine("Неверно указаны параметры запуска.");
+                Console.WriteLine("Использование: DaemonCopy \"source path\" \"destination path\"");
+                return 1;
             }
 
             var logger = new Log("Main");
@@ -28,13 +18,21 @@ namespace DaemonCopy
             var fileLog = new LogRotation();
             fileLog.Rotation();
 
-            var source = new DirectoryInfo(_argS);
-            var destination = new DirectoryInfo(_argD);
+            var source = new DirectoryInfo(args[0]);
+            var destination = new DirectoryInfo(args[1]);
+
+            if (!source.Exists)
+            {
+                logger.Message($"Папка-источник не найдена: {source.FullName}");
+                Console.WriteLine($"Папка-источник не найдена: {source.FullName}");
+                return 2;
+            }
 
             ICopyFiles mirrorCopyFiles = new MirrorCopyFiles(logger);
             mirrorCopyFiles.CopyFilesLefttoRight(source, destination);
 
             logger.Message(" Архивация закончена!");
+            return 0;
         }
     }
 }

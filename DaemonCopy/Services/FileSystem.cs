@@ -1,11 +1,8 @@
-﻿using System;
-using System.IO;
-
-namespace DaemonCopy.Services
+﻿namespace DaemonCopy.Services
 {
     class FileSystem
     {
-        private Log _logger;
+        private readonly Log _logger;
 
         public FileSystem(Log logger)
         {
@@ -16,7 +13,7 @@ namespace DaemonCopy.Services
         {
             try
             {
-                if (path != null) File.Delete(path.FullName + "\\" + file.Name);
+                File.Delete(Path.Combine(path.FullName, file.Name));
             }
             catch(Exception ex)
             {
@@ -28,7 +25,7 @@ namespace DaemonCopy.Services
         {
             try
             {
-                File.Copy(sourceFileName: file.FullName, destFileName: path.FullName + "\\" + file.Name);
+                File.Copy(sourceFileName: file.FullName, destFileName: Path.Combine(path.FullName, file.Name));
             }
             catch(Exception ex)
             {

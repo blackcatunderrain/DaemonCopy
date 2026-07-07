@@ -1,10 +1,10 @@
-﻿using System;
-using System.IO;
-
-namespace DaemonCopy.Services
+﻿namespace DaemonCopy.Services
 {
     class LogRotation
     {
+        private const string LogDirectory = "log";
+        private const string ErrorLog = "error.log";
+
         public LogRotation()
         {
 
@@ -13,15 +13,15 @@ namespace DaemonCopy.Services
         public void Rotation()
         {
             var moveFileName = $"error_{DateTime.Now:ddMMyyyyHHmm}.log";
-            var errorLog = "error.log";
 
-            if (File.Exists(errorLog))
+            if (!Directory.Exists(LogDirectory))
+                Directory.CreateDirectory(LogDirectory);
+
+            if (File.Exists(ErrorLog))
             {
-                if (!Directory.Exists("log"))
-                    Directory.CreateDirectory("log");
                 try
                 {
-                    File.Move(errorLog, "log\\" + moveFileName);
+                    File.Move(ErrorLog, Path.Combine(LogDirectory, moveFileName));
                 }
                 catch(Exception ex)
                 {
@@ -29,9 +29,9 @@ namespace DaemonCopy.Services
                 }
             }
 
-            var filesl = Directory.GetFiles("log");
+            var files = Directory.GetFiles(LogDirectory);
 
-            foreach (var file in filesl)
+            foreach (var file in files)
             {
                 if (DateTime.Now - File.GetCreationTime(file) > TimeSpan.FromDays(7d))
                     File.Delete(file);

@@ -1,12 +1,9 @@
-﻿using System;
-using System.IO;
-
-namespace DaemonCopy.Services
+﻿namespace DaemonCopy.Services
 {
     class Log
     {
 
-        string _name;
+        private readonly string _name;
 
         public string Name
         {
@@ -25,17 +22,15 @@ namespace DaemonCopy.Services
 
         public void Fatal(Exception error)
         {
-            var writer = new StreamWriter("error.log", true);
+            using var writer = new StreamWriter("error.log", true);
             var errorMessage = DateTime.Now.ToString() + "\t" + error.Message;
             writer.WriteLine(errorMessage);
-            writer.Close();
         }
 
         public void Message(string text)
         {
-            var writer = new StreamWriter("error.log", true);
+            using var writer = new StreamWriter("error.log", true);
             writer.WriteLine(text);
-            writer.Close();
         }
     }
 }

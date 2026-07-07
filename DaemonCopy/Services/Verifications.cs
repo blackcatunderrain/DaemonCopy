@@ -1,13 +1,8 @@
-﻿using System;
-using System.IO;
-
-namespace DaemonCopy.Services
+﻿namespace DaemonCopy.Services
 {
     class Verifications
     {
-        private Log _logger;
-        private bool _isExistFile = false;
-        private bool _isFileNew = false;
+        private readonly Log _logger;
 
         public Verifications(Log logger)
         {
@@ -31,18 +26,15 @@ namespace DaemonCopy.Services
 
         public bool IsFileExist(DirectoryInfo path, FileInfo file)
         {
-            if (File.Exists(path.FullName + "\\" + file.Name))
-                _isExistFile = true;
-            return _isExistFile;
+            return File.Exists(Path.Combine(path.FullName, file.Name));
         }
 
         public bool IsFileNew (DirectoryInfo path, FileInfo file)
         {
             var lastWriteLeft = File.GetLastWriteTime(file.FullName);
-            var lastWriteRight = File.GetLastWriteTime(path.FullName + "\\" + file.Name);
-            if (lastWriteLeft > lastWriteRight)
-                _isFileNew = true;
-            return _isFileNew;
+            var lastWriteRight = File.GetLastWriteTime(Path.Combine(path.FullName, file.Name));
+
+            return lastWriteLeft > lastWriteRight;
         }
     }
 }

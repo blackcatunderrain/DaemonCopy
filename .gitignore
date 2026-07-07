@@ -1,3 +1,5 @@
 daemoncopy/obj/
 daemoncopy/bin/
 .idea/
+.vs/
+.DS_Store
