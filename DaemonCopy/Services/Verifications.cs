@@ -9,27 +9,29 @@
             _logger = logger;
         }
 
-        public void CheckPathExist(DirectoryInfo path)
+        public bool TryEnsureDirectoryExists(DirectoryInfo path)
         {
-            if (!path.Exists)
+            if (Directory.Exists(path.FullName))
+                return true;
+
+            try
             {
-                try
-                {
-                    path.Create();
-                }
-                catch(Exception ex)
-                {
-                    _logger.Fatal(ex);
-                }
+                Directory.CreateDirectory(path.FullName);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                _logger.Fatal(ex);
+                return false;
             }
         }
 
-        public bool IsFileExist(DirectoryInfo path, FileInfo file)
+        public bool FileExists(DirectoryInfo path, FileInfo file)
         {
             return File.Exists(Path.Combine(path.FullName, file.Name));
         }
 
-        public bool IsFileNew (DirectoryInfo path, FileInfo file)
+        public bool IsSourceNewer(DirectoryInfo path, FileInfo file)
         {
             var lastWriteLeft = File.GetLastWriteTime(file.FullName);
             var lastWriteRight = File.GetLastWriteTime(Path.Combine(path.FullName, file.Name));

@@ -22,15 +22,16 @@ namespace DaemonCopy
             var verify = new Verifications(_logger);
             var fileOperation = new FileSystem(_logger);
 
-            verify.CheckPathExist(rightPath);
+            if (!verify.TryEnsureDirectoryExists(rightPath))
+                return;
 
             var files = leftPath.GetFiles();
 
             foreach (var file in files)
             {
-                if (verify.IsFileExist(rightPath, file))
+                if (verify.FileExists(rightPath, file))
                 {
-                    if (verify.IsFileNew(rightPath, file))
+                    if (verify.IsSourceNewer(rightPath, file))
                     {
                         fileOperation.Delete(rightPath, file);
                         fileOperation.Copy(rightPath, file);
