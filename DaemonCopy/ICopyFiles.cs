@@ -2,7 +2,7 @@
 
 namespace DaemonCopy
 {
-    interface ICopyFiles
+    public interface ICopyFiles
     {
         void CopyFilesLefttoRight(DirectoryInfo dirPath, DirectoryInfo destination);
     }

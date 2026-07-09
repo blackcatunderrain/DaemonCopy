@@ -2,7 +2,7 @@
 
 namespace DaemonCopy
 {
-    class MirrorCopyFiles : ICopyFiles
+    public class MirrorCopyFiles : ICopyFiles
     {
 
         private readonly Log _logger;

@@ -1,6 +1,6 @@
 ﻿namespace DaemonCopy.Services
 {
-    class Log
+    public class Log
     {
 
         private readonly string _name;

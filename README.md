@@ -31,6 +31,12 @@ DaemonCopy "source path" "destination path"
 dotnet build
 ```
 
+## Tests
+
+```bash
+dotnet run --project DaemonCopy.Tests
+```
+
 ## Publish examples
 
 Framework-dependent build:

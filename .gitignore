@@ -1,5 +1,7 @@
-daemoncopy/obj/
-daemoncopy/bin/
+DaemonCopy/obj/
+DaemonCopy/bin/
+DaemonCopy.Tests/obj/
+DaemonCopy.Tests/bin/
 .idea/
 .vs/
 .DS_Store
